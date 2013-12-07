@@ -1,6 +1,6 @@
 #! /bin/bash
 
-set_machine_name() {
+get_machine_name() {
     MACHINE_NAME=$(cat /etc/hostname)
 }
 set_ps() {
@@ -14,10 +14,14 @@ fix_tty() {
 
 install_ansible() {
     apt-get update -qq
-    apt-get install -y -qq python-software-properties
+    apt-get install -qqy python-software-properties
     add-apt-repository ppa:rquillo/ansible
     apt-get update -qq
-    apt-get install -y -qq ansible
+    apt-get install -qqy ansible
+}
+
+provision_ansible() {
+    ansible -i /vagrant/provision/hosts local -m ping
 }
 
 set_insecure_ssh_key() { #ip addr
@@ -74,13 +78,17 @@ list_finished() { # list_name
 }
 
 main() {
-    set_machine_name
+    get_machine_name
+    if [[ $(type ansible 2>/dev/null) ]]; then
+        logger 'm' "Running provisioner: ansible" provision_ansible
+    else
+        logger 'm' "Installing ansible" install_ansible
+    fi
     # logger "Setting PS" set_ps
     # logger "Fixing tty bug" fix_tty
-    # logger 'm' "Installing ansible" install_ansible
-    logger "m" "Setting up ssh" set_insecure_ssh_key $1
+    # logger "m" "Setting up ssh" set_insecure_ssh_key $1
 
-    list_finished "Bootstraping Ansible"
+    # list_finished "Bootstraping Ansible"
 }
 
 main $@

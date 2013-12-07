@@ -14,15 +14,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "post", primary: true do |post|
     post.vm.hostname = "post"
-    # post.vm.provision
+    post.vm.provision :shell, :path => "provision.sh"
     post.vm.network :private_network, ip: "192.168.200.22"
+    post.vm.synced_folder "./provision", "/vagrant/provision", :mount_options => ["dmode=755","fmode=644"]
   end
 
-  config.vm.define "ansib" do |ansib|
-    ansib.vm.hostname = "ansib"
-    ansib.vm.provision :shell, :path => "ansib-bootstrap.sh", :args => "'192.168.200.22'"
-    ansib.vm.network :private_network, ip: "192.168.200.10"
-  end
+  # config.vm.define "ansib" do |ansib|
+  #   ansib.vm.hostname = "ansib"
+  #   ansib.vm.provision :shell, :path => "ansib-bootstrap.sh", :args => "'192.168.200.22'"
+  #   ansib.vm.network :private_network, ip: "192.168.200.10"
+  # end
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
