@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "post", primary: true do |post|
     post.vm.hostname = "post"
-    post.vm.provision :shell, :path => "provision.sh"
+    post.vm.provision :shell, :path => "provision.sh", :keep_color => true
     post.vm.network :private_network, ip: "192.168.200.22"
     post.vm.synced_folder "./provision", "/vagrant/provision", :mount_options => ["dmode=755","fmode=644"]
   end

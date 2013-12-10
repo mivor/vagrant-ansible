@@ -1,5 +1,9 @@
 #! /bin/bash
 
+RED="\033[31m"
+GREEN="\033[32m"
+NORMAL="\033[0m"
+
 get_machine_name() {
     MACHINE_NAME=$(cat /etc/hostname)
 }
@@ -21,7 +25,7 @@ install_ansible() {
 }
 
 provision_ansible() {
-    ansible -i /vagrant/provision/hosts local -m ping
+    ANSIBLE_FORCE_COLOR="1" ansible -i /vagrant/provision/hosts local -m ping
 }
 
 set_insecure_ssh_key() { #ip addr
@@ -47,7 +51,7 @@ logger() { # ?m MSG func params
         shift
     fi
     # assign message to be printed
-    local MSG="[$MACHINE_NAME] $1..."
+    local MSG="[$MACHINE_NAME] $1 ... "
     shift
     # print newline if multi line command
     if [[ "$IS_MULTI_LINE" == "" ]]; then
@@ -59,13 +63,13 @@ logger() { # ?m MSG func params
     "$@"
     # check comands error STATUS
     if [[ "$?" == 0 ]]; then
-        STATUS="DONE"
+        STATUS=$GREEN"DONE"$NORMAL
     else
-        STATUS="ERROR"
+        STATUS=$RED"ERROR"$NORMAL
     fi
     # display error STATUS
     if [[ "$IS_MULTI_LINE" == "" ]]; then
-        printf "DONE\n"
+        printf "$STATUS\n"
     else
         printf "$MSG$STATUS\n"
     fi
