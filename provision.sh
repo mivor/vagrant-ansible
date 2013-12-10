@@ -25,7 +25,7 @@ install_ansible() {
 }
 
 provision_ansible() {
-    ANSIBLE_FORCE_COLOR="1" ansible -i /vagrant/provision/hosts local -m ping
+    ANSIBLE_FORCE_COLOR="1" ansible-playbook -i /vagrant/provision/hosts /vagrant/provision/main.yml
 }
 
 set_insecure_ssh_key() { #ip addr
@@ -51,7 +51,7 @@ logger() { # ?m MSG func params
         shift
     fi
     # assign message to be printed
-    local MSG="[$MACHINE_NAME] $1 ... "
+    local MSG="[$MACHINE_NAME] $1... "
     shift
     # print newline if multi line command
     if [[ "$IS_MULTI_LINE" == "" ]]; then
